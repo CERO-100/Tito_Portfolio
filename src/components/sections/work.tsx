@@ -18,7 +18,10 @@ import { cn } from "@/lib/utils";
 
 const WorkSection = () => {
   return (
-    <section id="work" className="min-h-screen max-w-7xl mx-auto scroll-mt-20 py-20">
+    <section
+      id="work"
+      className="relative z-10 min-h-screen max-w-7xl mx-auto scroll-mt-20 py-20"
+    >
       <Link href={"#work"}>
         <h2
           className={cn(
@@ -32,9 +35,15 @@ const WorkSection = () => {
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4 pb-20">
-        {freelanceWork.map((project, idx) => (
-          <ProjectCard project={project} key={idx} />
-        ))}
+        {freelanceWork.length === 0 ? (
+          <p className="text-center col-span-3 text-white">
+            No projects to display
+          </p>
+        ) : (
+          freelanceWork.map((project, idx) => (
+            <ProjectCard project={project} key={idx} />
+          ))
+        )}
       </div>
     </section>
   );
