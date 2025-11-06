@@ -22,21 +22,19 @@ const WorkSection = () => {
       <Link href={"#work"}>
         <h2
           className={cn(
-            "bg-clip-text text-4xl text-center text-transparent md:text-7xl pt-16 mb-32",
-            "bg-gradient-to-b from-black/90 to-black/60",
-            "dark:bg-gradient-to-b dark:from-white/90 dark:to-white/50"
+            "bg-clip-text text-4xl text-center text-transparent md:text-7xl pt-16",
+            "bg-gradient-to-b from-black/80 to-black/50",
+            "dark:bg-gradient-to-b dark:from-white/80 dark:to-white/20 dark:bg-opacity-50 mb-32"
           )}
         >
           Freelance Work
         </h2>
       </Link>
 
-      <div className="flex flex-col items-center justify-center px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-7xl">
-          {freelanceWork.map((project, idx) => (
-            <ProjectCard project={project} key={idx} />
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
+        {freelanceWork.map((project, idx) => (
+          <ProjectCard project={project} key={idx} />
+        ))}
       </div>
     </section>
   );
@@ -46,82 +44,87 @@ export default WorkSection;
 
 const ProjectCard = ({ project }: { project: Project }) => {
   return (
-    <Modal>
-      <ModalTrigger className="flex justify-center group/modal-btn">
-        <div className="rounded-md flex flex-1 w-full group-hover/modal-btn:shadow-2xl cursor-pointer overflow-hidden relative flex-col border border-zinc-700">
-          <div className="relative h-[200px] w-full">
+    <div className="flex items-center justify-center">
+      <Modal>
+        <ModalTrigger className="bg-transparent flex justify-center group/modal-btn">
+          <div
+            className="relative w-full h-auto rounded-lg overflow-hidden"
+            style={{ aspectRatio: "3/2" }}
+          >
             <Image
+              className="absolute w-full h-full top-0 left-0 hover:scale-[1.05] transition-all object-cover"
               src={project.src}
               alt={project.title}
               fill
-              className="object-cover"
             />
+            <div className="absolute w-full h-1/2 bottom-0 left-0 bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none">
+              <div className="flex flex-col h-full items-start justify-end p-6">
+                <div className="text-lg text-left text-white">
+                  {project.title}
+                </div>
+                <div className="text-xs bg-white text-black rounded-lg w-fit px-2">
+                  {project.category}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="p-4 bg-zinc-900">
-            <h3 className="font-bold text-white text-sm mb-2">
-              {project.title}
-            </h3>
-            <p className="text-zinc-400 text-xs mb-3">{project.category}</p>
-            <div className="flex flex-wrap gap-1">
-              {[...project.skills.frontend, ...project.skills.backend]
-                .slice(0, 3)
-                .map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2 py-1 text-xs rounded-full"
-                    style={{
-                      backgroundColor: skill.bg,
-                      color: skill.fg,
-                    }}
-                  >
-                    {skill.title}
-                  </span>
+        </ModalTrigger>
+        <ModalBody className="md:max-w-4xl md:max-h-[80%] overflow-auto">
+          <SmoothScroll isInsideModal={true}>
+            <ModalContent>
+              <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
+                {project.title}
+              </h4>
+              <div className="flex flex-col md:flex-row md:justify-evenly max-w-screen overflow-hidden md:overflow-visible">
+                {project.skills.frontend?.length > 0 && (
+                  <div className="flex flex-row md:flex-col-reverse justify-center items-center gap-2 text-3xl mb-8">
+                    <p className="text-sm mt-1 text-neutral-600 dark:text-neutral-500">
+                      Frontend
+                    </p>
+                    <FloatingDock items={project.skills.frontend} />
+                  </div>
+                )}
+                {project.skills.backend?.length > 0 && (
+                  <div className="flex flex-row md:flex-col-reverse justify-center items-center gap-2 text-3xl mb-8">
+                    <p className="text-sm mt-1 text-neutral-600 dark:text-neutral-500">
+                      Backend
+                    </p>
+                    <FloatingDock items={project.skills.backend} />
+                  </div>
+                )}
+              </div>
+              <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-start max-w-sm mx-auto">
+                {project.screenshots.map((screenshot, idx) => (
+                  <Image
+                    key={"images" + idx}
+                    src={`${project.src
+                      .split("/")
+                      .slice(0, -1)
+                      .join("/")}/${screenshot}`}
+                    alt="project screenshot"
+                    width={500}
+                    height={500}
+                    className="rounded-lg object-cover h-auto w-full shadow-xl"
+                  />
                 ))}
-            </div>
-          </div>
-        </div>
-      </ModalTrigger>
-      <ModalBody>
-        <SmoothScroll isInsideModal={true}>
-          <ModalContent className="overflow-y-scroll max-h-[80vh]">
-            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
-              {project.title}
-            </h4>
-            <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-start max-w-sm mx-auto">
-              {project.screenshots.map((screenshot, idx) => (
-                <Image
-                  key={"images" + idx}
-                  src={`${project.src
-                    .split("/")
-                    .slice(0, -1)
-                    .join("/")}/${screenshot}`}
-                  alt="project screenshot"
-                  width={500}
-                  height={500}
-                  className="rounded-lg object-cover h-auto w-full shadow-xl"
-                />
-              ))}
-            </div>
-            <div className="max-w-2xl mx-auto">{project.content}</div>
-          </ModalContent>
+              </div>
+              <div className="max-w-2xl mx-auto">{project.content}</div>
+            </ModalContent>
+          </SmoothScroll>
           <ModalFooter className="gap-4">
-            <FloatingDock
-              items={[
-                ...project.skills.backend.map((skill, idx) => ({
-                  title: skill.title,
-                  icon: <div className="text-2xl">{skill.icon}</div>,
-                  href: "#",
-                })),
-                ...project.skills.frontend.map((skill, idx) => ({
-                  title: skill.title,
-                  icon: <div className="text-2xl">{skill.icon}</div>,
-                  href: "#",
-                })),
-              ]}
-            />
+            <button className="px-2 py-1 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm w-28">
+              Cancel
+            </button>
+            {project.live && (
+              <Link href={project.live} target="_blank">
+                <button className="bg-black text-white dark:bg-white dark:text-black text-sm px-2 py-1 rounded-md border border-black w-28">
+                  Visit
+                </button>
+              </Link>
+            )}
           </ModalFooter>
-        </SmoothScroll>
-      </ModalBody>
-    </Modal>
+        </ModalBody>
+      </Modal>
+    </div>
   );
 };
